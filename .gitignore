@@ -1,0 +1,4 @@
+spt_env/
+.vscode
+# .env
+.cache
