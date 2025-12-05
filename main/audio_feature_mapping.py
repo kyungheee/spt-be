@@ -58,6 +58,8 @@ MOOD_TO_FEATURE: Dict[Mood, AudioFeatureRange] = {
         "danceability": (0.4, 0.8),
     },
 }
+# 이거 사용자의 경험에 따라 조정 가능하게(업데이트 가능하게)
+
 
 # spotify 오디오 피처 한 세트
 @dataclass
