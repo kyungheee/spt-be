@@ -1,4 +1,4 @@
-spt_env/
+spt-b-env\
 .vscode
 # .env
 .cache
