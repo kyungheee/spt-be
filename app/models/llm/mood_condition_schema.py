@@ -1,11 +1,11 @@
 from enum import Enum
-from pydantic import BaseModel, Field
 from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 # ---------------------------
 # 1. Mood(기분/기분의 강도) 정의
 # ---------------------------
-
 class Mood(str, Enum):
     anger = "분노"
     sadness = "슬픔"
@@ -22,7 +22,6 @@ class MoodInfo(BaseModel):
 # ---------------------------
 # 2. Condition(상황/장소/날씨) 정의
 # ---------------------------
-
 class Weather(str, Enum):
     sunny = "맑음"
     hot = "폭염"
@@ -39,10 +38,7 @@ class Condition(BaseModel):
 # ---------------------------
 # 3. 최종 스키마: Mood + Condition 묶음
 # ---------------------------    
-    
 class MoodConditionQuery(BaseModel):
-    """
-    LLM이 출력하는 최종 구조화 결과
-    """    
+    """LLM이 출력하는 최종 구조화 결과"""    
     moods: List[MoodInfo] = Field(default_factory=list, description="기분과 기분 강도")
-    condition: Condition = Field(default_factory=Condition, description="상황/장소/날씨 정보") 
+    condition: Condition = Field(default_factory=Condition, description="상황/장소/날씨 정보")

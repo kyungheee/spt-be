@@ -1,11 +1,12 @@
 import os
-from dotenv import load_dotenv
+from typing import List
 
+from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
-from src.mood_condition_schema import MoodConditionQuery
+from app.models.llm.mood_condition_schema import Mood, MoodConditionQuery, MoodInfo
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ llm = ChatOpenAI(
    model="gpt-4o-mini",
    temperature=0.0,
    openai_api_key=os.environ["OPENAI_API_KEY"] # API key 로딩
-)
+) 
 
 # 2) LLM 출력 -> Pydantic 모델로 변환해주는 LangChain 컴포넌트
 parser = PydanticOutputParser(pydantic_object=MoodConditionQuery)
@@ -40,14 +41,59 @@ prompt = ChatPromptTemplate.from_template(
 ).partial(format_instructions=parser.get_format_instructions()) #TODO 이게 무슨 의미?
 
 # 4) Langchain 구성: 프롬프트 -> LLM -> parser 순서대로 실행
-chain = prompt | llm | parser
+chain = prompt | llm | parser if llm else None
 
-def parse_user_input_to_query(user_input : str) -> MoodConditionQuery: #TODO 
+_FALLBACK_MOODS = {
+   "분노": Mood.anger,
+   "슬픔": Mood.sadness,
+   "아픔": Mood.pain,
+   "불안": Mood.anxiety,
+   "창피": Mood.shame,
+   "기쁨": Mood.joy,
+   "사랑": Mood.love
+}
+
+_FALLBACK_WEATHER = {
+   "맑음": "sunny",
+   "폭염": "hot",
+   "흐림": "cloudy",
+   "비": "rainy",
+   "폭풍우": "storm",
+   "눈": "snowy"
+}
+
+def _fallback_parse(user_input: str) -> MoodConditionQuery:
+   moods: List[MoodInfo] = []
+   
+   for keyword, mood in _FALLBACK_MOODS.items():
+      if keyword in user_input:
+         moods.append(MoodInfo(mood=mood, mood_level=7)) #FIXME default=7?
+         
+   weather = None
+   for keyword, value in _FALLBACK_WEATHER.items():
+      if keyword in user_input:
+         weather = value
+         break #TODO 이게 뭐였더라
+
+   return MoodConditionQuery.parse_obj(
+      {
+         "moods": moods,
+         "condition": {
+            "situation": None,
+            "place": None,
+            "weather": weather,
+         },
+      }
+   )
+
+def parse_user_input_to_query(user_input : str) -> MoodConditionQuery:
    """
-   자연어 입력(user_input)을 받아서 Langchain으로 돌린 뒤, MoodConditionQuery(pydantic모델)로 변환해서 반환
+   자연어 입력(user_input)을 받아서 Langchain으로 돌린 뒤, MoodConditionQuer(pydantic모델)로 변환해서 반환
+   환경변수에 OPENAI_API_KEY가 없으면 간단한 키워드 매칭 기반으로 결과를 생성한다.
    """
-   result: MoodConditionQuery = chain.invoke({"user_input": user_input})
-   return result
+   if chain:
+      return chain.invoke({"user_input": user_input}) #TOOD 이게 뭐임?
+   return _fallback_parse(user_input=)
 
 
 if __name__ == "__main__":

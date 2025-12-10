@@ -1,9 +1,11 @@
+from datetime import datetime, timezone
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from src.llm_parser import parse_user_input_to_query
-from src.mood_condition_schema import MoodConditionQuery
+from app.api.chat import router as chat_router
+from app.models.llm.llm_parser import parse_user_input_to_query
+from app.models.llm.mood_condition_schema import MoodConditionQuery
 
 app = FastAPI()
 
@@ -11,8 +13,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # 우선 전체 허용, 나중에 도메인 좁히면 됨
-    allow_credentials = True,
-    allow_method=["*"],  
+    allow_credentials=True,
+    allow_method=["*"],
     allow_headers=["*"],
 )
 
@@ -27,3 +29,9 @@ async def llm_endpoint(data: Prompt):
     """
     result = parse_user_input_to_query(data.prompt)
     return result
+
+@app.get("/health")
+async def health_check() -> dict[str, str]:
+    return {"status": "ok", "timestamp": datetime.fromtimestamp(0, timezone.utc).isoformat()}
+
+app.include_router(chat_router)
