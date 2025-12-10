@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
-from mood_condition_schema import MoodConditionQuery
+from src.mood_condition_schema import MoodConditionQuery
 
 load_dotenv()
 

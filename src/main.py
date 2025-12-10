@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from llm_parser import parse_user_input_to_query
-from mood_condition_schema import MoodConditionQuery
+from src.llm_parser import parse_user_input_to_query
+from src.mood_condition_schema import MoodConditionQuery
 
 app = FastAPI()
 
