@@ -70,4 +70,36 @@ class AudioFeature:
     acousticness: float
     danceability: float
     
+    def clip(self) -> AudioFeature:
+        self.valence = _clamp(self.valence)
+        self.energy = _clamp(self.energy)
+        self.tempo = max(0.0, self.tempo)
+        self.acousticness = _clamp(self.acousticness)
+        self.danceability = _clamp(self.danceability)
+        return self
     
+    def as_dict(self) -> Dict[str, float]:
+        return {
+            "valence": self.valence,
+            "energy": self.energy,
+            "tempo": self.tempo,
+            "acousticness": self.acousticness,
+            "danceability": self.danceability,
+        }
+    
+DEFAULT_FEATURE = AudioFeature(0.5, 0.5, 120.0, 0.5, 0.5)
+
+def _clamp(value: float) -> float:
+    return max(0.0, min(1.0, value))
+
+def _midpoint(low: float, high: float) -> float:
+    return (low + high) / 2.0   
+
+def _feature_midpoint(ranges: AudioFeatureRange) -> AudioFeature:
+    return AudioFeature(
+        valence = _midpoint(*ranges["valence"]),
+        energy = _midpoint(*ranges["envergy"]),
+        tempo = _midpoint(*ranges["tempo"]),
+        acusticeness = _midpoint(*ranges["acousticness"]),
+        danceability = _midpoint(*ranges["danceability"])
+    )
