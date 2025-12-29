@@ -1,5 +1,5 @@
 spt-b-env/
 .vscode
-# .env
+.env
 .cache
 __pycache__/
