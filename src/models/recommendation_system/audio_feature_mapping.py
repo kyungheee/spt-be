@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Iterable, Tuple
-from app.models.llm.mood_condition_schema import Mood, MoodInfo
+from src.models.llm.mood_condition_schema import Mood, MoodInfo
 
 # 0~1 스케일 피처 + tempo(BPM)을 기분으로 사용
 AudioFeatureRange = Dict[str, Tuple[float, float]]

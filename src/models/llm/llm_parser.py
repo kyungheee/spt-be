@@ -6,7 +6,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
-from app.models.llm.mood_condition_schema import Mood, MoodConditionQuery, MoodInfo
+from src.models.llm.mood_condition_schema import Mood, MoodConditionQuery, MoodInfo
 
 load_dotenv()
 
@@ -38,7 +38,7 @@ prompt = ChatPromptTemplate.from_template(
    사용자 입력:
    {user_input}
    """
-).partial(format_instructions=parser.get_format_instructions()) #TODO 이게 무슨 의미?
+).partial(format_instructions=parser.get_format_instructions()) 
 
 # 4) Langchain 구성: 프롬프트 -> LLM -> parser 순서대로 실행
 chain = prompt | llm | parser if llm else None
@@ -67,13 +67,13 @@ def _fallback_parse(user_input: str) -> MoodConditionQuery:
    
    for keyword, mood in _FALLBACK_MOODS.items():
       if keyword in user_input:
-         moods.append(MoodInfo(mood=mood, mood_level=7)) #FIXME default=7?
+         moods.append(MoodInfo(mood=mood, mood_level=7)) 
          
    weather = None
    for keyword, value in _FALLBACK_WEATHER.items():
       if keyword in user_input:
          weather = value
-         break #TODO 이게 뭐였더라
+         break 
 
    return MoodConditionQuery.parse_obj(
       {
@@ -92,7 +92,7 @@ def parse_user_input_to_query(user_input : str) -> MoodConditionQuery:
    환경변수에 OPENAI_API_KEY가 없으면 간단한 키워드 매칭 기반으로 결과를 생성한다.
    """
    if chain:
-      return chain.invoke({"user_input": user_input}) #TOOD 이게 뭐임?
+      return chain.invoke({"user_input": user_input})
    return _fallback_parse(user_input=)
 
 

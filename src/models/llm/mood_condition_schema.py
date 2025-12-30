@@ -1,6 +1,5 @@
 from enum import Enum
 from typing import List, Optional
-
 from pydantic import BaseModel, Field
 
 # ---------------------------
@@ -17,7 +16,7 @@ class Mood(str, Enum):
     
 class MoodInfo(BaseModel):
     mood: Mood = Field(default=None, description="기분 카테고리")
-    mood_level: int = Field(default=0, ge=0, le=10, description = "기분의 강도(0~10)")
+    mood_level: int = Field(default=0, ge=0, le=1, description = "기분의 강도(0~1)")
 
 # ---------------------------
 # 2. Condition(상황/장소/날씨) 정의

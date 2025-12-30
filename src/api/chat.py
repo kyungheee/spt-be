@@ -5,8 +5,8 @@ from uuid import uuid4
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
-from app.models.llm.llm_parser import parse_user_input_to_query
-from app.models.llm.mood_condition_schema import MoodConditionQuery
+from src.models.llm.llm_parser import parse_user_input_to_query
+from src.models.llm.mood_condition_schema import MoodConditionQuery
 
 router = APIRouter(prefix="/chatbot", tags=["chatbot"])
 

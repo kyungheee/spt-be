@@ -3,9 +3,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from app.api.chat import router as chat_router
-from app.models.llm.llm_parser import parse_user_input_to_query
-from app.models.llm.mood_condition_schema import MoodConditionQuery
+from src.api.chat import router as chat_router
+from src.models.llm.llm_parser import parse_user_input_to_query
+from src.models.llm.mood_condition_schema import MoodConditionQuery
 
 app = FastAPI()
 
